@@ -1,5 +1,7 @@
 package com.exp.controllers;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,11 +9,13 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+import com.exp.models.ResponseData;
 import com.exp.models.User;
 import com.exp.models.UserDao;
 
-@Controller
+@RestController
 public class UserController {
 	
 	@Autowired
@@ -21,59 +25,60 @@ public class UserController {
 
   @RequestMapping("/create")
   @ResponseBody
-  public String create(String email, String name) {
+  public ResponseData create(String email, String name) {
     User user = null;
     try {
       user = new User(email, name);
       userDao.save(user);
     }
     catch (Exception ex) {
-      return "Error creating the user: " + ex.toString();
+    	return new ResponseData(false, Arrays.asList("Error with user creation."));
     }
-    return "User succesfully created! (id = " + user.getId() + ")";
+    return new ResponseData(true, Arrays.asList(user));
   }
   
   @RequestMapping("/delete")
   @ResponseBody
-  public String delete(long id) {
+  public ResponseData delete(long id) {
     try {
       User user = new User(id);
       userDao.delete(user);
     }
     catch (Exception ex) {
-      return "Error deleting the user:" + ex.toString();
+    	return new ResponseData(false, Arrays.asList("User not found."));
     }
-    return "User succesfully deleted!";
+    return new ResponseData(true, Arrays.asList("User deleted."));
   }
   
   @RequestMapping("/get-by-email")
   @ResponseBody
-  public String getByEmail(String email) {
-    String userId;
+  public ResponseData getByEmail(String email) {
+    User user;
     try {
-      User user = userDao.findByEmail(email);
-      userId = String.valueOf(user.getId());
+      user = userDao.findByEmail(email);
       log.info("/get-by-email: " + email);
     }
     catch (Exception ex) {
-      return "User not found";
+    	log.error("/get-by-email: " + email);
+      return new ResponseData(false, Arrays.asList("User not found"));
     }
-    return "The user id is: " + userId;
+    return new ResponseData(true, Arrays.asList(user));
   }
   
   @RequestMapping("/update")
   @ResponseBody
-  public String updateUser(long id, String email, String name) {
+  public ResponseData updateUser(long id, String email, String name) {
+	  User user;
     try {
-      User user = userDao.findOne(id);
+      user = userDao.findOne(id);
       user.setEmail(email);
       user.setName(name);
       userDao.save(user);
     }
     catch (Exception ex) {
-      return "Error updating the user: " + ex.toString();
+    	return new ResponseData(false, Arrays.asList("User not found"));
     }
-    return "User succesfully updated!";
+    return new ResponseData(true, Arrays.asList(user));
   }
 
   

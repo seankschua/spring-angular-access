@@ -47,6 +47,16 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+		    <groupId>com.google.code.gson</groupId>
+		    <artifactId>gson</artifactId>
+		</dependency>
+		<exclusions>
+	        <exclusion>
+	            <artifactId>jackson-databind</artifactId>
+	            <groupId>com.fasterxml.jackson.core</groupId>
+	        </exclusion>
+	    </exclusions>
 	</dependencies>
 	
 	<build>
