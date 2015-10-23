@@ -40,14 +40,15 @@ public class UserController {
   @RequestMapping("/delete")
   @ResponseBody
   public ResponseData delete(long id) {
+	  User user;
     try {
-      User user = new User(id);
+      user = new User(id);
       userDao.delete(user);
     }
     catch (Exception ex) {
     	return new ResponseData(false, Arrays.asList("User not found."));
     }
-    return new ResponseData(true, Arrays.asList("User deleted."));
+    return new ResponseData(true, Arrays.asList("User " + user.getId() + " deleted."));
   }
   
   @RequestMapping("/get-by-email")
