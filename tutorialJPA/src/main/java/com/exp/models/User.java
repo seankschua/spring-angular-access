@@ -23,8 +23,9 @@ public class User {
   @NotNull
   private String name;
   
-  //The user's pp
-  private String pp2;
+  @NotNull
+  //The user's ps
+  private String password;
   
   public User() { }
 
@@ -32,9 +33,10 @@ public class User {
     this.id = id;
   }
   
-  public User(String email, String name) {
+  public User(String email, String name, String password) {
     this.email = email;
     this.name = name;
+    this.password = password;
   }
 
   // Getter and setter methods

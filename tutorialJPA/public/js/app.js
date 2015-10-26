@@ -1,10 +1,11 @@
-var starterApp = angular.module('starterApp', ['ngRoute','ngMaterial']);
+var starterApp = angular.module('starterApp', ['ngRoute','ngMaterial','ngMessages','ngPassword','ngToast']);
 
 starterApp.config(['$routeProvider',
   function($routeProvider) {
     $routeProvider.
       when('/register', {
-        templateUrl: 'views/register.html'
+        templateUrl: 'views/register.html',
+        controller: 'registerCtrl'
       }).
       otherwise({
         redirectTo: '/'

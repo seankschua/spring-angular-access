@@ -7,31 +7,57 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.exp.models.ResponseData;
+import com.exp.models.Universe;
 import com.exp.models.User;
 import com.exp.models.UserDao;
+import com.exp.models.GsonHttp;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 @RestController
 public class UserController {
 	
 	@Autowired
 	private UserDao userDao;
+	
+	@Autowired
+	private GsonHttp gsonHttp;
 
 	private final Logger log = LoggerFactory.getLogger(this.getClass());
 
   @RequestMapping("/create")
   @ResponseBody
-  public ResponseData create(String email, String name) {
+  public ResponseData create(String email, String name, String password) {
     User user = null;
     try {
-      user = new User(email, name);
+      user = new User(email, name, password);
       userDao.save(user);
     }
     catch (Exception ex) {
+    	return new ResponseData(false, Arrays.asList("Error with user creation."));
+    }
+    return new ResponseData(true, Arrays.asList(user));
+  }
+  
+  @RequestMapping(value="/createPOST", method = RequestMethod.POST)
+  @ResponseBody
+  public ResponseData createPOST(@RequestBody User user) {
+
+    try {
+    	log.info(user.getName());
+      //user = Universe.getGson().fromJson(submitUser, User.class);
+      userDao.save(user);
+    }
+    catch (Exception ex) {
+    	log.error("/createPOST: " + ex.getLocalizedMessage());
     	return new ResponseData(false, Arrays.asList("Error with user creation."));
     }
     return new ResponseData(true, Arrays.asList(user));

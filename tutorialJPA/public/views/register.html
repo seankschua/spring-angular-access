@@ -1,1 +1,49 @@
-This is register.
+<div layout="row" layout-align="center center" style="height:100%">
+	<div ng-controller="registerCtrl" ng-cloak flex="auto" flex-gt-sm="75" flex-gt-md="50" layout="column">
+		<md-content>
+			<md-card layout-padding md-theme="docs-dark" >
+				<form ng-submit="register()" name="registerForm">
+				    <md-input-container>  
+				      <label>Name</label>
+				      <input ng-model="input.name" required pattern="^\w[\w\.]+\w$" minlength="6" md-maxlength="45" name="name">
+				      <div ng-messages="registerForm.name.$error" ng-show="registerForm.name.$touched">
+				      	<div ng-message="required">This is required.</div>
+				      	<div ng-message="minlength">Minimum 6 characters required.</div>
+				      	<div ng-message="pattern">Alphanumeric characters only. Periods are allowed in between.</div>
+				      	<div ng-message="md-maxlength">Maximum 45 characters long.</div>
+				      </div>
+				    </md-input-container>
+				    <md-input-container>
+				      <label>Email</label>
+				      <input ng-model="input.email" type="email" required md-maxlength="45" name="email">
+				      <div ng-messages="registerForm.email.$error" ng-show="registerForm.email.$touched">
+				      	<div ng-message="required">This is required.</div>
+				      	<div ng-message="email">Must match an email pattern.</div>
+				      	<div ng-message="md-maxlength">Maximum 45 characters long.</div>
+				      </div>
+				    </md-input-container>
+				    <md-input-container>
+				      <label>Password</label>
+				      <input ng-model="input.password" type="password" required pattern="^[\w\!\@\#\$\%\^\&\*\(\)\_\-\+\.]+$" minlength="6" md-maxlength="45" name="password">
+				      <div ng-messages="registerForm.password.$error" ng-show="registerForm.password.$touched">
+				      	<div ng-message="required">This is required.</div>
+				      	<div ng-message="minlength">Minimum 6 characters required.</div>
+				      	<div ng-message="pattern">Alphanumeric characters and !@#$%^&*()_-+. only.</div>
+				      	<div ng-message="md-maxlength">Maximum 45 characters long.</div>
+				      </div>
+				    </md-input-container>
+				    <md-input-container>
+				      <label>Password (Confirmation)</label>
+				      <input ng-model="input.passwordCfm" type="password" required match-password="password" name="passwordCfm">
+				      <div ng-messages="registerForm.passwordCfm.$error">
+				      	<div ng-message="passwordMatch">Passwords do not match.</div>
+				      	
+				      </div>
+				    </md-input-container>
+				    <md-button type="submit" class="md-primary btn btn-primary">Register</md-button>
+				    <br/><br/><pre>input={{input}}</pre>
+				</form>
+			</md-card>
+	  </md-content>
+	</div>
+</div>
