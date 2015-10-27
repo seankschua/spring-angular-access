@@ -1,4 +1,4 @@
-var starterApp = angular.module('starterApp', ['ngRoute','ngMaterial','ngMessages','ngPassword','ngToast']);
+var starterApp = angular.module('starterApp', ['ngRoute','ngMaterial','ngMessages','ngPassword','ngToast','angular-storage']);
 
 starterApp.config(['$routeProvider',
   function($routeProvider) {
@@ -7,6 +7,10 @@ starterApp.config(['$routeProvider',
         templateUrl: 'views/register.html',
         controller: 'registerCtrl'
       }).
+      when('/login', {
+	      templateUrl: 'views/login.html',
+	      controller: 'loginCtrl'
+	    }).
       otherwise({
         redirectTo: '/'
       });
@@ -18,4 +22,5 @@ var logger = function(data){
 	}
 }
 
+var msgServeLoad = "Loading..."
 var msgServeError = "An unknown error has occured."

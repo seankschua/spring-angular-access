@@ -27,6 +27,10 @@ public class User {
   //The user's ps
   private String password;
   
+  @NotNull
+  //The user's role
+  private int role;
+  
   public User() { }
 
   public User(long id) { 
@@ -64,5 +68,23 @@ public class User {
   public void setName(String value) {
     this.name = value;
   }
+
+	public String getPassword() {
+		return password;
+	}
+	
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public int getRole() {
+		return role;
+	}
+
+	public void setRole(int role) {
+		this.role = role;
+	}
+	
+	
   
 } // class User
