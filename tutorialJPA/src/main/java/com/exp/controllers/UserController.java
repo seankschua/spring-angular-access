@@ -1,5 +1,6 @@
 package com.exp.controllers;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import org.slf4j.Logger;
@@ -50,16 +51,26 @@ public class UserController {
   @RequestMapping(value="/createPOST", method = RequestMethod.POST)
   @ResponseBody
   public ResponseData createPOST(@RequestBody User user) {
-
+	  ArrayList<String> errors = new ArrayList<String>();
+	  ArrayList<Object> errorObj = null;
     try {
-    	log.info(user.getName());
-      //user = Universe.getGson().fromJson(submitUser, User.class);
+    	if(userDao.countByEmail(user.getEmail())>0){
+    		errors.add("user email " + user.getEmail() + " already exists.");
+    	}
+    	if(userDao.countByName(user.getName())>0){
+    		errors.add("user name " + user.getName() + " already exists.");
+    	}
+    	if(!errors.isEmpty()){
+    		errorObj = new ArrayList<Object>(errors);
+    		throw new Exception();
+    	}
       userDao.save(user);
     }
     catch (Exception ex) {
     	log.error("/createPOST: " + ex.getLocalizedMessage());
-    	return new ResponseData(false, Arrays.asList("Error with user creation."));
+    	return new ResponseData(false, errorObj);
     }
+    log.info("/createPOST: " + user.getId() + ", " + user.getEmail());
     return new ResponseData(true, Arrays.asList(user));
   }
   

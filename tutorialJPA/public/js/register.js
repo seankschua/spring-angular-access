@@ -10,11 +10,17 @@ starterApp.controller('registerCtrl', function($scope, $http, ngToast) {
     $scope.register = function(){
     	$http.post("/createPOST", $scope.input)
     		.success(function(data){
-    			ngToast.create('User created!');
+    			if(data.success==false){
+    				for (i in data.data){
+        				ngToast.danger(data.data[i]);
+    				}
+    			} else {
+    				ngToast.success('User created!');
+    			}
     			console.log(data);
     		})
     		.error(function(data){
-    			console.log($scope.input);
+    			ngToast.danger(msgServeError);
     			console.log(data);
     		})
     }

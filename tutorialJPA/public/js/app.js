@@ -11,3 +11,5 @@ starterApp.config(['$routeProvider',
         redirectTo: '/'
       });
   }]);
+
+var msgServeError = "An unknown error has occured."

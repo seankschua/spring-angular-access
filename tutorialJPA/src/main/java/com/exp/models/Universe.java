@@ -1,11 +1,9 @@
 package com.exp.models;
 
-import com.google.gson.Gson;
-
 public class Universe {
 
-	public static Gson getGson(){
-		return new Gson();
+	public static boolean validateUser(User user){
+		return false;
 	}
 	
 }

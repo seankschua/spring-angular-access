@@ -8,5 +8,9 @@ import org.springframework.data.repository.CrudRepository;
 public interface UserDao extends CrudRepository<User, Long> {
 
   public User findByEmail(String email);
+  
+  public long countByName(String name);
+
+  public long countByEmail(String name);
 
 } // class UserDao
