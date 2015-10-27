@@ -12,4 +12,10 @@ starterApp.config(['$routeProvider',
       });
   }]);
 
+var logger = function(data){
+	if(true){
+		console.log(data);
+	}
+}
+
 var msgServeError = "An unknown error has occured."

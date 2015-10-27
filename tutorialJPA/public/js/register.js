@@ -17,11 +17,11 @@ starterApp.controller('registerCtrl', function($scope, $http, ngToast) {
     			} else {
     				ngToast.success('User created!');
     			}
-    			console.log(data);
+    			logger(data);
     		})
     		.error(function(data){
     			ngToast.danger(msgServeError);
-    			console.log(data);
+    			logger(data);
     		})
     }
     
