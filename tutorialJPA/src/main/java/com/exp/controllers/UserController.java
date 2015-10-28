@@ -76,6 +76,7 @@ public class UserController {
     		throw new Exception();
     	}
       userDao.save(user);
+      universe.sendMailSSL(log, user.getEmail(), "Welcome to Expedia SEM's site!", "test");
     }
     catch (Exception ex) {
     	errorObj = new ArrayList<Object>(errors);
