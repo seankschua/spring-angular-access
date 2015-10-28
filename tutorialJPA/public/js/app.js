@@ -1,4 +1,4 @@
-var starterApp = angular.module('starterApp', ['ngRoute','ngMaterial','ngMessages','ngPassword','ngToast','angular-storage']);
+var starterApp = angular.module('starterApp', ['ngRoute','ngMaterial','ngMessages','ngToast','angular-storage']);
 
 starterApp.config(['$routeProvider',
   function($routeProvider) {
@@ -23,4 +23,5 @@ var logger = function(data){
 }
 
 var msgServeLoad = "Loading..."
-var msgServeError = "An unknown error has occured."
+var msgServeUnError = "An unknown error has occured."	
+var msgServeError = "A server error has occured."

@@ -6,6 +6,8 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.exp.models.ResponseData;
 import com.exp.models.SubGeneric;
+import com.exp.models.SubLogin;
 import com.exp.models.Universe;
 import com.exp.models.User;
 import com.exp.models.UserDao;
@@ -30,6 +33,7 @@ import com.google.gson.JsonObject;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
 
 @RestController
 public class UserController {
@@ -69,12 +73,12 @@ public class UserController {
     		errors.add("user name " + user.getName() + " already exists.");
     	}
     	if(!errors.isEmpty()){
-    		errorObj = new ArrayList<Object>(errors);
     		throw new Exception();
     	}
       userDao.save(user);
     }
     catch (Exception ex) {
+    	errorObj = new ArrayList<Object>(errors);
     	log.error("/createPOST: " + ex.getMessage() + "~" + universe.getGson().toJson(user));
     	return new ResponseData(false, errorObj);
     }
@@ -84,29 +88,28 @@ public class UserController {
   
   @RequestMapping(value="/loginPOST", method = RequestMethod.POST)
   @ResponseBody
-  public ResponseData loginPOST(@RequestBody User user) {
+  public ResponseData loginPOST(@RequestBody SubLogin user, HttpServletRequest request) {
 	  ArrayList<String> errors = new ArrayList<String>();
 	  ArrayList<Object> errorObj = null;
 	  String jwt = "";
+	  User userDB = null;
     try {
     	
-    	User userDB = userDao.findByEmail(user.getEmail());
+    	userDB = userDao.findByEmail(user.getEmail());
     	if(userDB==null){
     		errors.add("User does not exist.");
-    	}
-    	if(!errors.isEmpty()){
-    		errorObj = new ArrayList<Object>(errors);
     		throw new Exception();
     	}
     	if(!userDB.getPassword().contentEquals(user.getPassword())){
     		errors.add("Password does not match.");
     	}
     	if(!errors.isEmpty()){
-    		errorObj = new ArrayList<Object>(errors);
     		throw new Exception();
     	}
     	//log.info(universe.getGson().toJson(userDB));
     	//log.info("/loginPOST key: " + Base64.getEncoder().encodeToString(universe.getKey().getEncoded()));
+    	//log.info("/loginPOST device: " + user.getDevice());
+    	//log.info("/loginPOST address: " + request.getRemoteAddr());
     	
     	HashMap<String, Object> claims = new HashMap<String, Object>();
     	claims.put("issuer", "expedia.com");
@@ -114,17 +117,20 @@ public class UserController {
     	claims.put("iat", new DateTime().getMillis());
     	claims.put("name", userDB.getName());
     	claims.put("role", userDB.getRole());
+    	claims.put("userAgent", user.getDevice());
+    	claims.put("ip", request.getRemoteAddr());
     	
     	jwt = Jwts.builder().setClaims(claims)
     			.signWith(SignatureAlgorithm.HS512, universe.getKey())
     			.compact();
     }
     catch (Exception ex) {
+    	errorObj = new ArrayList<Object>(errors);
     	log.error("/loginPOST: " + ex.getMessage() + "~" + universe.getGson().toJson(user));
     	return new ResponseData(false, errorObj);
     }
     log.info("/loginPOST: " + universe.getGson().toJson(user));
-    return new ResponseData(true, Arrays.asList(jwt));
+    return new ResponseData(true, Arrays.asList(jwt, userDB.getName()));
   }
   
   @RequestMapping(value="/checkLoginPOST", method = RequestMethod.POST)
@@ -134,10 +140,19 @@ public class UserController {
 	  ArrayList<Object> errorObj = null;
 	  Claims claims = null;
     try {
-    	claims = Jwts.parser().setSigningKey(universe.getKey()).parseClaimsJws(sub.getInput()).getBody();
+    	if(sub.getInputs().get(0)==null){
+    		errors.add("You have no login.");
+    		throw new Exception();
+    	}	
+    	claims = Jwts.parser().setSigningKey(universe.getKey()).parseClaimsJws(sub.getInputs().get(0)).getBody();
     	//log.info("/checkLoginPOST: issuer~" + claims.get("issuer"));
     }
+    catch (SignatureException ex){
+    	log.error("/checkLoginPOST: " + ex.getMessage() + "~" + universe.getGson().toJson(sub));
+    	return new ResponseData(false, Arrays.asList("Your login has expired. Please logout and re-login."));
+    }
     catch (Exception ex) {
+    	errorObj = new ArrayList<Object>(errors);
     	log.error("/checkLoginPOST: " + ex.getMessage() + "~" + universe.getGson().toJson(sub));
     	return new ResponseData(false, errorObj);
     }

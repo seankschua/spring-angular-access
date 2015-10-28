@@ -1,18 +1,22 @@
 package com.exp.models;
 
+import java.util.List;
+
 public class SubGeneric {
 	
-	private String input;
+	private List<String> inputs;
 
 	public SubGeneric() {
 	}
 
-	public String getInput() {
-		return input;
+	public List<String> getInputs() {
+		return inputs;
 	}
 
-	public void setInput(String input) {
-		this.input = input;
+	public void setInputs(List<String> inputs) {
+		this.inputs = inputs;
 	}
+	
+	
 	
 }

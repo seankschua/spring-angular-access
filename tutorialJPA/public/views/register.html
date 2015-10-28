@@ -34,10 +34,10 @@
 				    </md-input-container>
 				    <md-input-container>
 				      <label>Password (Confirmation)</label>
-				      <input ng-model="input.passwordCfm" type="password" required match-password="password" name="passwordCfm">
-				      <div ng-messages="registerForm.passwordCfm.$error">
-				      	<div ng-message="passwordMatch">Passwords do not match.</div>
-				      	
+				      <input ng-model="input.passwordCfm" type="password" required pattern={{input.password}} name="passwordCfm">
+				      <div ng-messages="registerForm.passwordCfm.$error" ng-show="registerForm.passwordCfm.$touched">
+				      	<div ng-message="required">This is required.</div>
+				      	<div ng-message="pattern">Does not match.</div>
 				      </div>
 				    </md-input-container>
 				    <md-button type="submit" class="md-primary btn btn-primary">Register</md-button>

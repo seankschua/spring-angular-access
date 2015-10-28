@@ -22,12 +22,15 @@
 				      	<div ng-message="md-maxlength">Maximum 45 characters long.</div>
 				      </div>
 				    </md-input-container>
-				    <md-button type="submit" class="md-primary btn btn-primary">login</md-button>
+				    <md-button type="submit" class="md-raised md-primary">login</md-button>
 				    <br/><br/><pre>input={{input}}</pre>
 				</form>
 			</md-card>
 			<md-card>
 				<md-button ng-click="checkLogged()">Check login</md-button>
+			</md-card>
+			<md-card>
+				<md-button ng-click="logout()">Logout</md-button>
 			</md-card>
 	  </md-content>
 	</div>
