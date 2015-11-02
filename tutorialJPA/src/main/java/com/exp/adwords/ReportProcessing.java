@@ -100,7 +100,8 @@ public class ReportProcessing {
 	public static void cleanRow(String[] headerRow, String[] row, HashMap<String,String> audienceHash) throws UnsupportedEncodingException, FileNotFoundException{
 		
 		String[] perc = {"CTR", "ConvRate", "BidAdj"};
-		String[] values = {"AvgCPC", "Cost", "TotalConvValue", "DefaultMaxCPC"};
+		String[] values = {"AvgCPC", "Cost", "DefaultMaxCPC"};
+		String[] valuesComma = {"TotalConvValue", "ValueConv"};
 		String[] typeTime = {"Day"};
 		
 		
@@ -118,6 +119,9 @@ public class ReportProcessing {
 				}
 				float cellValue = Float.parseFloat(row[i]);
 				row[i] = Float.toString(cellValue/1000000);
+			}
+			if(Arrays.asList(valuesComma).contains(headerRow[i])){
+				row[i] = row[i].replace(",", "");
 			}
 			//time
 			if(Arrays.asList(typeTime).contains(headerRow[i])){
@@ -168,7 +172,7 @@ public class ReportProcessing {
 		}
 		
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
-		String output = gson.toJson(scheme);
+		String output = gson.toJson(new Schema(scheme));
 		//System.out.println(output);
 		
 		Writer writer = new OutputStreamWriter(new FileOutputStream(outputSchemeFile), "UTF-8");

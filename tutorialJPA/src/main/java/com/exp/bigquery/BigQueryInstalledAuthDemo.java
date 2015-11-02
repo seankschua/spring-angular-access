@@ -32,7 +32,7 @@ import com.google.api.services.bigquery.model.DatasetList;
 class BigQueryInstalledAuthDemo {
 
   // Change this to your current project ID
-  private static final String PROJECT_NUMBER = "74933321245";
+  public static final String PROJECT_NUMBER = "74933321245";
 
   // Load Client ID/secret from client_secrets.json file.
   private static final String CLIENTSECRETS_LOCATION = "src/main/resources/bigquery/client_secrets.json";
@@ -41,8 +41,8 @@ class BigQueryInstalledAuthDemo {
   private static final String REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob";
 
   // Objects for handling HTTP transport and JSON formatting of API calls
-  private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-  private static final JsonFactory JSON_FACTORY = new JacksonFactory();
+  public static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+  public static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
   private static GoogleAuthorizationCodeFlow flow = null;
 
@@ -99,7 +99,7 @@ class BigQueryInstalledAuthDemo {
   /**
    *  Builds an authorized BigQuery API client.
    */
-  private static Bigquery buildService(Credential credential) {
+  public static Bigquery buildService(Credential credential) {
     return new Bigquery.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).build();
   }
 
@@ -175,7 +175,7 @@ class BigQueryInstalledAuthDemo {
     properties.setProperty("refreshtoken", refresh_token);
     System.out.println(properties.get("refreshtoken"));
     try {
-      properties.store(new FileOutputStream("token.properties"), null);
+      properties.store(new FileOutputStream("src/main/resources/bigquery/token.properties"), null);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -187,10 +187,10 @@ class BigQueryInstalledAuthDemo {
   /**
    *  Helper to load refresh token from the token.properties file.
    */
-  private static String loadRefreshToken(){
+  public static String loadRefreshToken(){
     Properties properties = new Properties();
     try {
-      properties.load(new FileInputStream("token.properties"));
+      properties.load(new FileInputStream("src/main/resources/bigquery/token.properties"));
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     } catch (IOException e) {
