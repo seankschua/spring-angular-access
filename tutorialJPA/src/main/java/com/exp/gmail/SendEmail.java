@@ -1,4 +1,4 @@
-package com.exp.setup;
+package com.exp.gmail;
 
 import com.google.api.client.repackaged.org.apache.commons.codec.binary.Base64;
 import com.google.api.services.gmail.Gmail;

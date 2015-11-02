@@ -1,4 +1,4 @@
-package com.exp.setup;
+package com.exp.gmail;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -29,7 +29,7 @@ public class GmailQuickstart {
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
-        "src/main/resources");
+        "src/main/resources/gmail");
 
     /** Global instance of the {@link FileDataStoreFactory}. */
     private static FileDataStoreFactory DATA_STORE_FACTORY;
@@ -63,7 +63,7 @@ public class GmailQuickstart {
     public static Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in =
-            new FileInputStream("src/main/resources/client_secret_73670702007-m3jm1v2deu51fdbhdvcm3922r03gigjh.apps.googleusercontent.com.json");
+            new FileInputStream("src/main/resources/gmail/client_secrets.json");
         GoogleClientSecrets clientSecrets =
             GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 

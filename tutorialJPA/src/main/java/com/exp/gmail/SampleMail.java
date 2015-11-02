@@ -1,4 +1,4 @@
-package com.exp.setup;
+package com.exp.gmail;
 
 import java.io.IOException;
 
