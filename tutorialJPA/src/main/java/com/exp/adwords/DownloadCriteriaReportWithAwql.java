@@ -51,10 +51,7 @@ import java.util.Arrays;
 */
 public class DownloadCriteriaReportWithAwql {
 
-public static void downloadReport(String customerId, String query, String fileName) throws Exception {
-	
-	File pathFile = new File("");
-	String path = pathFile.getAbsolutePath();
+public static void downloadReport(String customerId, String query, String fileName, String path) throws Exception {
 	
  // Generate a refreshable OAuth2 credential.
  Credential oAuth2Credential = new OfflineCredentials.Builder()
@@ -73,11 +70,11 @@ public static void downloadReport(String customerId, String query, String fileNa
      .build();
 
  // Location to download report to.
- String reportFile = path + "/src/main/resources/adwords/" + fileName + ".csv";
- runExample(session, query, reportFile);
+ String reportFile = path + fileName;
+ runExample(session, query, reportFile, path);
 }
 
-public static void runExample(AdWordsSession session, String query, String reportFile) throws Exception {
+public static void runExample(AdWordsSession session, String query, String reportFile, String path) throws Exception {
  // Create query.
 	
 
@@ -112,9 +109,7 @@ public static void runExample(AdWordsSession session, String query, String repor
 	     .build();
 	 
 	 UserListPage page = null;
-	 File pathFile = new File("");
-	 String path = pathFile.getAbsolutePath();
-	 String audiencePath = path + "/src/main/resources/adwords/" + "audienceListNames" + ".csv";
+	 String audiencePath = path + "audience_names.csv";
 	 CsvWriter writer = new CsvWriter(new OutputStreamWriter(new FileOutputStream(audiencePath), "UTF-8"), new CsvWriterSettings());
 	 do {
 		  // Get all campaigns.

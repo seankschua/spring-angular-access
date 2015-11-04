@@ -1,5 +1,7 @@
 package com.exp.adwords;
 
+import java.io.File;
+
 public class BatchProcessing {
 	
 	public static void main(String[] args){
@@ -14,9 +16,11 @@ public class BatchProcessing {
 		
 		try {
 			
+			File pathFile = new File("");
+			String path = pathFile.getAbsolutePath() + "/src/main/resources/adwords/";
 			String fileName = type + "_" + clientId + "_" + startDate  + "_" + endDate + "_" + "report";
 			
-			DownloadCriteriaReportWithAwql.downloadReport(clientId, generateQuery(type, startDate, endDate), fileName);
+			DownloadCriteriaReportWithAwql.downloadReport(clientId, generateQuery(type, startDate, endDate), fileName, path);
 			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

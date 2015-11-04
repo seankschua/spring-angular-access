@@ -28,11 +28,11 @@ import com.univocity.parsers.tsv.TsvWriterSettings;
 
 public class ReportProcessing {
 	
-	public static void main(String[] args) throws IOException{
+	public static void cleanReport(String rawFile, String processedFile, String type, String path) throws IOException{
 		
-		String filePath = "src/main/resources/adwords/adgroup_625-898-2657_20151026_20151027_report.csv";
-		String output = filePath.split("\\.")[0] + "_processed.csv";
-		String outputSchemeFile = filePath.split("_")[0] + "_scheme.json";
+		String filePath = path + rawFile;
+		String output = path + processedFile;
+		String outputSchemeFile = path + type + "_scheme.json";
 		
 		TsvParserSettings settings = new TsvParserSettings();
 	    //the file used in the example uses '\n' as the line separator sequence.
@@ -60,6 +60,14 @@ public class ReportProcessing {
 	    	}
 	    	headerRow[i] = temp.replace(".", "").replace("/", "");
 	    }
+	    
+	    //adding audienceId to end if audience type
+	    if(type.contentEquals("audience")){
+	    	ArrayList<String> addAud = new ArrayList<String>(Arrays.asList(headerRow));
+	    	addAud.add("AudienceID");
+	    	headerRow = addAud.toArray(new String[addAud.size()]);
+	    }
+	    
 	    writer.writeHeaders(headerRow);
 	    generateBQHeaderScheme(headerRow, outputSchemeFile);
 	    
@@ -72,7 +80,7 @@ public class ReportProcessing {
 		    settings.getFormat().setLineSeparator("\n");
 		    CsvParser csvParser = new CsvParser(csvSettings);
 
-		    csvParser.beginParsing(new InputStreamReader(new FileInputStream("src/main/resources/adwords/audienceListNames.csv"), "UTF-8"));
+		    csvParser.beginParsing(new InputStreamReader(new FileInputStream(path + "/audience_names.csv"), "UTF-8"));
 		    String[] audienceListRow;
 		    while ((audienceListRow = csvParser.parseNext()) != null) {
 		    	//System.out.println(audienceListRow[0] + "~" + audienceListRow[1]);
@@ -84,7 +92,7 @@ public class ReportProcessing {
 	    String[] row = null;
 	    while((row = parser.parseNext()) != null){
 	    	
-	    	cleanRow(headerRow, row, audienceHash);
+	    	row = cleanRow(headerRow, row, audienceHash);
 	    	writer.writeRow(row);
 	    	//System.out.println(Arrays.toString(row));
 	    }
@@ -97,13 +105,22 @@ public class ReportProcessing {
 		
 	}
 	
-	public static void cleanRow(String[] headerRow, String[] row, HashMap<String,String> audienceHash) throws UnsupportedEncodingException, FileNotFoundException{
+	public static String[] cleanRow(String[] headerRow, String[] row, HashMap<String,String> audienceHash) throws UnsupportedEncodingException, FileNotFoundException{
 		
 		String[] perc = {"CTR", "ConvRate", "BidAdj"};
 		String[] values = {"AvgCPC", "Cost", "DefaultMaxCPC"};
 		String[] valuesComma = {"TotalConvValue", "ValueConv"};
 		String[] typeTime = {"Day"};
 		
+		String audienceId = "";
+		
+		//make row match headerRow length
+		if(!audienceHash.isEmpty()){
+	    	ArrayList<String> addAud = new ArrayList<String>(Arrays.asList(row));
+	    	//the name string is currently sitting at where ID should be
+	    	addAud.add("");
+	    	row = addAud.toArray(new String[addAud.size()]);
+	    }
 		
 		for(int i=0;i<row.length;i++){
 			//dashes
@@ -129,23 +146,30 @@ public class ReportProcessing {
 			}
 			//audienceList names
 			if(headerRow[i].contentEquals("Audience")){
-				row[i] = audienceHash.get(row[i].split("::")[1]);
+				audienceId = row[i].split("::")[1];
+				row[i] = audienceHash.get(audienceId);
 			}
+			if(headerRow[i].contentEquals("AudienceID")){
+				row[i] = audienceId;
+			}
+			
+			
+			
 		}
 		
-		
+		return row;
 	    
 	}
 	
 	public static void generateBQHeaderScheme(String[] headerRow, String outputSchemeFile) throws IOException{
 		
 		ArrayList<ColumnProperties> scheme = new ArrayList<ColumnProperties>();
-		String[] typeInt = {"CustomerID", "CampaignID", "AdGroupID", "CriterionID", "Impressions", "Clicks"};
+		String[] typeInt = {"CustomerID", "CampaignID", "AdGroupID", "CriterionID", "Impressions", "Clicks", "AudienceID"};
 		String[] typeFloat = {"AvgPosition", "CTR", "ConvRate", "MaxCPC", "AvgCPC", "CostConv", "ValueConv", "Conversions",
 				"Cost", "TotalConvValue", "BidAdj", "DefaultMaxCPC"};
 		String[] typeTime = {"Day"};
 		String[] typeBoolean = {"IsRestricting"};
-		String[] modeNull = {"MaxCPC", "ConversionOptimizerBidType", "DefaultMaxCPC", "LabelIDs", "Labels"};
+		String[] modeNull = {"MaxCPC", "ConversionOptimizerBidType", "DefaultMaxCPC", "LabelIDs", "Labels", "BidAdj"};
 		
 		for(String s:headerRow){
 			

@@ -115,7 +115,7 @@ public class GettingStarted {
   
   public static final String TABLE_ID = "expedia_sem";
   
-  public static void main(String[] args) throws IOException {
+  public static void uploadBQ(String type, String processedFile, String path) throws IOException {
     
     String projectId = BigQueryInstalledAuthDemo.PROJECT_NUMBER;
     String storedRefreshToken = BigQueryInstalledAuthDemo.loadRefreshToken();
@@ -127,23 +127,19 @@ public class GettingStarted {
 
     Bigquery bigquery = BigQueryInstalledAuthDemo.buildService(credential);
 
-    List<TableRow> rows = executeQuery("SELECT count(*) FROM [expedia_sem.adgroup]", bigquery, projectId);
+    List<TableRow> rows = executeQuery("SELECT count(*) FROM [expedia_sem." + type + "]", bigquery, projectId);
 
     printResults(rows);
     
-    insertRows(BigQueryInstalledAuthDemo.PROJECT_NUMBER,TABLE_ID,"adgroup",
-    		new FileContent(MediaType.OCTET_STREAM.toString(), new File("src/main/resources/adwords/adgroup_625-898-2657_20151026_20151027_report_processed.csv")),bigquery);
-    
-    rows = executeQuery("SELECT count(*) FROM [expedia_sem.adgroup]", bigquery, projectId);
-
-    printResults(rows);
+    insertRows(BigQueryInstalledAuthDemo.PROJECT_NUMBER,TABLE_ID,type,
+    		new FileContent(MediaType.OCTET_STREAM.toString(), new File(path + processedFile)),bigquery,processedFile);
     
   }
   
   public static void insertRows(String projectId, 
           String datasetId, 
           String tableId, 
-          AbstractInputStreamContent data, Bigquery bigquery) {
+          AbstractInputStreamContent data, Bigquery bigquery, String processedFile) {
 	try {
 
 		// Table reference
@@ -171,7 +167,7 @@ public class GettingStarted {
 		   .setJobReference(
 		           new JobReference()
 		                   .setJobId(Joiner.on("-").join("INSERT", 
-		                           tableId, DateTime.now().toString("dd-MM-yyyy_HH-mm-ss-SSS")).replace(":", "-").replace(".", "-"))
+		                           tableId, processedFile, DateTime.now().toString("dd-MM-yyyy_HH-mm-ss-SSS")).replace(":", "-").replace(".", "-"))
 		                   .setProjectId(projectId))
 		   .setConfiguration(new JobConfiguration().setLoad(loadConfig));
 		// Job execution

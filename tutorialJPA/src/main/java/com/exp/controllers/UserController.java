@@ -36,6 +36,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 
 @RestController
+@Profile("site")
 public class UserController {
 	
 	@Autowired
