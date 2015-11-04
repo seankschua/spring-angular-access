@@ -1,4 +1,4 @@
-package com.exp.controllers;
+package com.exp.bigquery;
 
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +9,8 @@ import com.exp.adwords.BatchProcessing;
 import com.exp.adwords.DownloadCriteriaReportWithAwql;
 import com.exp.adwords.ReportProcessing;
 import com.exp.adwords.Test;
-import com.exp.bigquery.GettingStarted;
 
-public class AdwordsController {
+public class ManualUploads {
 	
 	public static void oneUpload(String clientId, String type, int startDate, int endDate) throws Exception{
 		
@@ -93,7 +92,7 @@ public class AdwordsController {
 		//int endDate = 20150131;
 		HashMap<String, String> clients = clientList();
 		ArrayList<Integer> months = monthList();
-		int totalJobCount = clients.keySet().size() * months.size();
+		int totalJobCount = types.length * clients.keySet().size() * months.size();
 		int jobCounter = 0;
 		
 		for (String type:types){
